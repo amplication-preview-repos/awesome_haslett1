@@ -1,0 +1,85 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model SubCategory {
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  categoryId     String?
+  createdAt      DateTime        @default(now())
+  id             String          @id @default(cuid())
+  inventoryItems InventoryItem[]
+  name           String?
+  updatedAt      DateTime        @updatedAt
+}
+
+model InventoryItem {
+  aprice        Float?
+  bcode         String?
+  category      Category?    @relation(fields: [categoryId], references: [id])
+  categoryId    String?
+  createdAt     DateTime     @default(now())
+  depart        String?
+  descript      String?
+  description   String?
+  id            String       @id @default(cuid())
+  location      String?
+  name          String?
+  prodid        String?
+  qtyonhand     Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  subCategoryId String?
+  updatedAt     DateTime     @updatedAt
+}
+
+model Category {
+  createdAt      DateTime        @default(now())
+  id             String          @id @default(cuid())
+  inventoryItems InventoryItem[]
+  name           String?
+  subCategories  SubCategory[]
+  updatedAt      DateTime        @updatedAt
+}
+
+model FileUpload {
+  createdAt        DateTime                    @default(now())
+  fileName         String?
+  filePath         String?
+  id               String                      @id @default(cuid())
+  progressTrackers ProgressTracker[]
+  status           EnumFileUploadStatus?
+  updatedAt        DateTime                    @updatedAt
+  uploadStatus     EnumFileUploadUploadStatus?
+}
+
+model ProgressTracker {
+  createdAt      DateTime                           @default(now())
+  currentIndex   Int?
+  fileUpload     FileUpload?                        @relation(fields: [fileUploadId], references: [id])
+  fileUploadId   String?
+  id             String                             @id @default(cuid())
+  progressStatus EnumProgressTrackerProgressStatus?
+  status         EnumProgressTrackerStatus?
+  totalItems     Int?
+  updatedAt      DateTime                           @updatedAt
+}
+
+enum EnumFileUploadStatus {
+  Option1
+}
+
+enum EnumFileUploadUploadStatus {
+  Option1
+}
+
+enum EnumProgressTrackerProgressStatus {
+  Option1
+}
+
+enum EnumProgressTrackerStatus {
+  Option1
+}
